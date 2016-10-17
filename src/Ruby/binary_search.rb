@@ -31,16 +31,8 @@ end
 
 
 
-def rotated_bsearch(arr, target, rotated = false)
+def rotated_bsearch(arr, target)
   return -1 if arr.empty?
-
-  # Lets rotate the arr randomly to the left a couple times
-  unless rotated
-    x = rand(6) + 2
-    arr = arr[x..-1] + arr[0...x]
-    rotated = true
-    p arr
-  end
 
   mid = arr.length / 2
 
@@ -54,15 +46,17 @@ def rotated_bsearch(arr, target, rotated = false)
 
   if  sorted_arr.empty? == false && target.between?(sorted_arr[0], sorted_arr[-1])
     if arr[0] == sorted_arr[0]
-      return rotated_bsearch(sorted_arr, target, rotated)
+      return rotated_bsearch(sorted_arr, target)
     else
-      return rotated_bsearch(sorted_arr, target, rotated) + 1 + mid
+      result = rotated_bsearch(sorted_arr, target)
+      return result == -1 ? -1 : result + mid + 1
     end
   else
     if arr[0] == unsorted_arr[0]
-      return rotated_bsearch(unsorted_arr, target, rotated)
+      return rotated_bsearch(unsorted_arr, target)
     else
-      return rotated_bsearch(unsorted_arr, target, rotated) + 1 + mid
+      result = rotated_bsearch(unsorted_arr, target)
+      return result == -1 ? -1 : result + mid + 1
     end
   end
 
