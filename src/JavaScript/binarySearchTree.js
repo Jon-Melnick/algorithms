@@ -90,6 +90,57 @@ BinaryTree.prototype.rotateLeft = function (node) {
   node.parent = holder;
 };
 
+BinaryTree.prototype.delete = function (val) {
+  let node = this.find(val);
+  if(!node) return null;
+  let bubbleup;
+  if(node.left || node.right){
+    let replacement = node.left ? this.findMax(node.left) : this.findMin(node.right);
+    bubbleup = replacement.parent === node ? replacement : replacement.parent;
+    replacement.parent.right === replacement ? replacement.parent.right = replacement.left : replacement.parent.left = replacement.right;
+    replacement.left = node.left;
+    replacement.right = node.right;
+    node.left.parent = replacement;
+    node.right.parent = replacement;
+    if(node.parent){
+      node.parent.left === node ? node.parent.left = replacement : node.parent.right = replacement;
+    } else {
+      this.root = replacement;
+    }
+  } else {
+    if (node.parent){
+      bubbleup = node.parent;
+      node.parent.left === node ? node.parent.left = null : node.parent.right = null;
+    } else {
+      this.root = node.parent;
+    }
+  }
+
+  this.rebalanceUp(bubbleup);
+};
+
+BinaryTree.prototype.rebalanceUp = function (start) {
+  let node = start;
+  while (node) {
+    this.rebalance(node);
+    node = node.parent;
+  }
+};
+
+BinaryTree.prototype.find = function (val) {
+  if(!val){return null;}
+  let node = this.root;
+  while (node && val !== node.value) {
+    if (val > node.value ) {
+      node = node.right;
+    } else if (val < node.value) {
+      node = node.left;
+    }
+  }
+  console.log(node);
+  return node;
+};
+
 
 
 
@@ -125,3 +176,13 @@ function bfs(root, callback){
     callback(node);
   }
 }
+
+function dfs(root, callback){
+  if (!callback) callback = (node)=>{console.log(node.value);}
+  if(!root) return null;
+  dfs(root.left);
+  dfs(root.right);
+  callback(root)
+}
+console.log(bTree.delete(5))
+console.log(inOrder(bTree.root))
